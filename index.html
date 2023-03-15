@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificação de Commits</title>
+</head>
+
+<body>
+    <form>
+        <div id="dados"></div>
+        <label>Repositorio: </label><br>
+        <input type="text" id="repositorio" onblur="validarCampoVazio(this)"/><br><br>
+        <label>Data Inicial:</label><br>
+        <input type="date" id="dataInicial" onblur="validarCampoVazio(this)"/><br><br>
+        <label>Data Final:</label><br>
+        <input type="date" id="dataFinal" onblur="validarCampoVazio(this)"/><br><br>
+        <input type="submit" value="pesquisar" /><br><br>
+    </form>
+
+    <script type="text/javascript" src="index.js"></script>
+
+</body>
+
+</html>
