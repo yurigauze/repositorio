@@ -1,34 +1,40 @@
+function validarCampoVazio(campo) {
+    if (campo.value === '') {
+        campo.style.border = '2px solid red';
+    } else {
+        campo.style.border = '';
+    }
+}
+
 const form = document.querySelector("form");
 form.addEventListener('submit', function (event) {
     event.preventDefault();
-    const repositorio = document.querySelector("#repositorio").value;
+    const repositorio = extrairUsuarioRepositorio(document.getElementById("repositorio").value);
     const dataInicial = document.querySelector("#dataInicial").value;
     const dataFinal = document.querySelector("#dataFinal").value;
     //console.log(repositorio + " " + dataInicial + " " + dataFinal);
     buscarCommits(repositorio, dataInicial, dataFinal);
+    buscarForks(repositorio);
+    contarEstrelas(repositorio);
 });
 
 function extrairUsuarioRepositorio(linkGithub) {
-    // extrair apenas a parte do link após "github.com/"
-    const partesLink = linkGithub.split("github.com/")[1];
-    document.getElementById("teste").innerHTML = partesLink;
-    
-    // extrair o usuário e o nome do repositório utilizando expressões regulares
-    const regexUsuarioRepositorio = /^(.+)\/(.+)\.git$/;
-    const match = partesLink.match(regexUsuarioRepositorio);
-  
-    // se o link estiver em um formato inválido, retornar null
-    if (!match || match.length !== 3) {
-      return null;
+
+    //Extrair a parte https://github.com do link
+    if (linkGithub.startsWith("https://github.com")) {
+        linkGithub = linkGithub.slice(19);
+        return linkGithub;
+    } else if (linkGithub.startsWith("github.com")) {
+        linkGithub= linkGithub.slice(10);
+        return linkGithub;
+    } else {
+        return linkGithub;
     }
-  
-    var teste = `${match[1]}/${match[2]}`;
-    // retornar a string no formato "usuário/nome_do_repositório"
-    document.getElementById("teste").innerHTML = teste;
-    
-  }
+
+}
 
 function buscarCommits(repositorio, dataInicial, dataFinal) {
+
     // Colocar no final da URL ? caso queira colocar mais parâmetros
     // Para separar os parâmetros, utilizar &
     // per_page = 100: demostra o máximo de itens que aparecem na página
@@ -51,41 +57,94 @@ function contarCommits(commits) {
         // Procurará a data dentro do objeto
         // date.substr(0,10): pegará apenas a data, ou seja, sem a hora
         const dataCommit = element.commit.author.date.substr(0, 10);
+        const mensagem = element.commit.message;
+
 
         // Verifica se existe dentro desse objeto esse atributo
         if (commitsPorDia[dataCommit]) {
             commitsPorDia[dataCommit].quantidade++;
+            commitsPorDia[dataCommit].mensagem + "," + mensagem;
         }
         // Caso não existe, eu crio a quantidade = 1 e com a data do commit
         else {
-            commitsPorDia[dataCommit] = { quantidade: 1, data: dataCommit };
+            commitsPorDia[dataCommit] = { quantidade: 1, data: dataCommit, mensagem: mensagem };
         }
     });
 
     console.log(commitsPorDia);
 
     const commitsPorDiaArray = Object.keys(commitsPorDia).map(dataCommit => {
-        return { data: dataCommit, quantidade: commitsPorDia[dataCommit].quantidade };
+        return { data: dataCommit, quantidade: commitsPorDia[dataCommit].quantidade, mensagem: commitsPorDia[dataCommit].mensagem };
     })
     console.log(commitsPorDiaArray);
     mostrarTela(commitsPorDiaArray);
 }
 
-function mostrarTela(commits) {
-    const dados = document.querySelector("#dados");
+function buscarForks(repositorio) {
 
-    commits.forEach(element => {
-        const h1 = document.createElement("h1");
-        h1.innerHTML = element.data + " - " + element.quantidade;
-        dados.appendChild(h1);
+    // Recebe o repositorio por parametro
+
+    const url = `https://api.github.com/repos/${repositorio}/forks`;
+
+    //retorna o url so para verificar se a api esta acessivel -- REMOVER DEPOIS
+    document.getElementById("url").textContent = url;
+
+    //recebe o jason e converte e retorna o tamanho do vetor das Forks
+    fetch(url).then(response => response.json()).then(forks => {
+        const quantidadeForks = forks.length;
+        document.getElementById("qtdforks").textContent = `Quantidade de Forks do respositorio ${repositorio}: ${quantidadeForks}`;
+
     });
 
 }
 
-function validarCampoVazio(campo) {
-    if (campo.value === '') {
-        campo.style.border = '2px solid red';
-    } else {
-        campo.style.border = '';
-    }
+function contarEstrelas(repositorio) {
+    const url = `https://api.github.com/repos/${repositorio}`;
+  
+    fetch(url)
+      .then(response => response.json())
+      .then(data => {
+        const estrelas = data.stargazers_count;
+        document.getElementById("estrelas").textContent = `O repositório ${repositorio} tem ${estrelas} estrelas.`;
+      })
+      .catch(error => console.error(error));
+  }
+  
+
+
+
+function mostrarTela(commits) {
+    const dados = document.querySelector("#dados");
+
+    // Cria uma tabela e adiciona a classe "tabela-commits"
+    const tabela = document.createElement("table");
+    tabela.classList.add("tabela-commits");
+
+    // Cria a primeira linha da tabela com os cabeçalhos das colunas
+    const cabecalho = tabela.createTHead().insertRow();
+    const cabecalhoData = cabecalho.insertCell();
+    cabecalhoData.innerHTML = "Data";
+    const cabecalhoQuantidade = cabecalho.insertCell();
+    cabecalhoQuantidade.innerHTML = "Quantidade";
+    const cabecalhoMensagem = cabecalho.insertCell();
+    cabecalhoMensagem.innerHTML = "Mensagem";
+
+    // Adiciona as linhas da tabela para cada commit
+    const corpoTabela = tabela.createTBody();
+    commits.forEach(commit => {
+        const linha = corpoTabela.insertRow();
+        const celulaData = linha.insertCell();
+        celulaData.innerHTML = commit.data.split('-').reverse().join('/'); //Colocando a data em um array e troca a posição, logo junta novamente usando /
+        const celulaQuantidade = linha.insertCell();
+        celulaQuantidade.innerHTML = commit.quantidade;
+        const celulaMensagem = linha.insertCell();
+        celulaMensagem.innerHTML = commit.mensagem;
+
+    });
+
+    // Substitui o conteúdo de "dados" pela tabela
+    dados.innerHTML = "";
+    dados.appendChild(tabela);
 }
+
+

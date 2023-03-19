@@ -6,23 +6,43 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Verificação de Commits</title>
+
+    <meta name="description" content="Quantidade de Commits">
+    <meta name="keywords" content="Quantidade de Commits">
+    <meta name="author" content="Yuri Gauze">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 
 <body>
-    <form>
+    <div class="container">
         
-        <label>Repositorio: </label><br>
-        <input type="text" id="repositorio" onblur="extrairUsuarioRepositorio(this) ; validarCampoVazio(this) "/><br><br>
-        <div id="teste"></div>
-        <label>Data Inicial:</label><br>
-        <input type="date" id="dataInicial" onblur="validarCampoVazio(this)"/><br><br>
-        <label>Data Final:</label><br>
-        <input type="date" id="dataFinal" onblur="validarCampoVazio(this)"/><br><br>
-        <input type="submit" value="pesquisar" /><br><br>
-        <div id="dados"></div>
+        <div class="form">
+            <h1>Consultas de Commits</h1>
+            <form>
+                <div class="box">
+                    <label>Repositorio: </label><br>
+                    <input type="text" id="repositorio" onblur="validarCampoVazio(this) " required/><br><br>
+                    <div id="url"></div>
+                </div>
+                <div class="box">
+                    <label>Data Inicial:</label><br>
+                    <input type="date" id="dataInicial" onblur="validarCampoVazio(this)" required/><br><br>
+                </div>
+                <div class="box">
+                    <label>Data Final:</label><br>
+                    <input type="date" id="dataFinal" onblur="validarCampoVazio(this)" required/><br><br>
+                </div>
+                <div class="box">
+                    <input type="submit" value="pesquisar" /><br><br>
+                </div>
+                <div id="dados"></div><br><br>
+                <div id="qtdforks"></div><br>
+                <div id="estrelas"></div><br>
+            </form>
+        </div>
+    </div>
 
-
-    </form>
 
     <script type="text/javascript" src="index.js"></script>
 
