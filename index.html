@@ -10,14 +10,18 @@
 
 <body>
     <form>
-        <div id="dados"></div>
+        
         <label>Repositorio: </label><br>
-        <input type="text" id="repositorio" onblur="validarCampoVazio(this)"/><br><br>
+        <input type="text" id="repositorio" onblur="extrairUsuarioRepositorio(this) ; validarCampoVazio(this) "/><br><br>
+        <div id="teste"></div>
         <label>Data Inicial:</label><br>
         <input type="date" id="dataInicial" onblur="validarCampoVazio(this)"/><br><br>
         <label>Data Final:</label><br>
         <input type="date" id="dataFinal" onblur="validarCampoVazio(this)"/><br><br>
         <input type="submit" value="pesquisar" /><br><br>
+        <div id="dados"></div>
+
+
     </form>
 
     <script type="text/javascript" src="index.js"></script>

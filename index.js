@@ -8,6 +8,26 @@ form.addEventListener('submit', function (event) {
     buscarCommits(repositorio, dataInicial, dataFinal);
 });
 
+function extrairUsuarioRepositorio(linkGithub) {
+    // extrair apenas a parte do link após "github.com/"
+    const partesLink = linkGithub.split("github.com/")[1];
+    document.getElementById("teste").innerHTML = partesLink;
+    
+    // extrair o usuário e o nome do repositório utilizando expressões regulares
+    const regexUsuarioRepositorio = /^(.+)\/(.+)\.git$/;
+    const match = partesLink.match(regexUsuarioRepositorio);
+  
+    // se o link estiver em um formato inválido, retornar null
+    if (!match || match.length !== 3) {
+      return null;
+    }
+  
+    var teste = `${match[1]}/${match[2]}`;
+    // retornar a string no formato "usuário/nome_do_repositório"
+    document.getElementById("teste").innerHTML = teste;
+    
+  }
+
 function buscarCommits(repositorio, dataInicial, dataFinal) {
     // Colocar no final da URL ? caso queira colocar mais parâmetros
     // Para separar os parâmetros, utilizar &
