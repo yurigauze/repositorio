@@ -82,7 +82,6 @@ function contarCommits(commits) {
     })
     console.log(commitsPorDiaArray);
     mostrarTela(commitsPorDiaArray);
-    calcularDiasComCommit(diasComCommits);
 }
 
 function buscarForks(repositorio) {
@@ -161,12 +160,12 @@ function calcularDiasComCommit(dataInicial, dataFinal) {
 
     const difference = day1.getTime() - day2.getTime();
     const days = difference / (1000 * 3600 * 24);
-  // quantidade de dias com commits (caso haja algum commit)
+
 
     
 
 
-    document.getElementById("tempo").textContent = `Dias disponíveis para a realização da atividade: ${days}`;
+    document.getElementById("tempo").innerHTML = `Dias disponíveis para a realização da atividade: ${days}`;
 
 
     console.log(`Dias disponíveis: ${days}`);
