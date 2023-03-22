@@ -55,13 +55,13 @@ h1 {
     display: inline-block;
  }
 
-table {
-    border-collapse: collapse;
-    text-align: center;
-}
-
-table, th, td {
-    border: 1px solid black;
+table,
+th,
+td {
+    font-family: sans-serif;
+    font-size: 115%;
+    width: auto;
+    border: 1px solid;
     text-align: center;
 }
 

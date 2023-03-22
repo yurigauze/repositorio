@@ -16,6 +16,8 @@ form.addEventListener('submit', function (event) {
     buscarCommits(repositorio, dataInicial, dataFinal);
     buscarForks(repositorio);
     contarEstrelas(repositorio);
+    calcularDiasComCommit(dataInicial, dataFinal);
+    diascomCommit();
 });
 
 function extrairUsuarioRepositorio(linkGithub) {
@@ -53,6 +55,7 @@ function buscarCommits(repositorio, dataInicial, dataFinal) {
 
 function contarCommits(commits) {
     const commitsPorDia = {};
+    let diasComCommits = 0; 
     commits.forEach(element => {
         // Procurará a data dentro do objeto
         // date.substr(0,10): pegará apenas a data, ou seja, sem a hora
@@ -68,6 +71,7 @@ function contarCommits(commits) {
         // Caso não existe, eu crio a quantidade = 1 e com a data do commit
         else {
             commitsPorDia[dataCommit] = { quantidade: 1, data: dataCommit, mensagem: mensagem };
+            diasComCommits++;
         }
     });
 
@@ -78,6 +82,7 @@ function contarCommits(commits) {
     })
     console.log(commitsPorDiaArray);
     mostrarTela(commitsPorDiaArray);
+    calcularDiasComCommit(diasComCommits);
 }
 
 function buscarForks(repositorio) {
@@ -85,9 +90,6 @@ function buscarForks(repositorio) {
     // Recebe o repositorio por parametro
 
     const url = `https://api.github.com/repos/${repositorio}/forks`;
-
-    //retorna o url so para verificar se a api esta acessivel -- REMOVER DEPOIS
-    document.getElementById("url").textContent = url;
 
     //recebe o jason e converte e retorna o tamanho do vetor das Forks
     fetch(url).then(response => response.json()).then(forks => {
@@ -114,6 +116,7 @@ function contarEstrelas(repositorio) {
 
 
 function mostrarTela(commits) {
+    var dias = 0;
     const dados = document.querySelector("#dados");
 
     // Cria uma tabela e adiciona a classe "tabela-commits"
@@ -137,14 +140,41 @@ function mostrarTela(commits) {
         celulaData.innerHTML = commit.data.split('-').reverse().join('/'); //Colocando a data em um array e troca a posição, logo junta novamente usando /
         const celulaQuantidade = linha.insertCell();
         celulaQuantidade.innerHTML = commit.quantidade;
+
         const celulaMensagem = linha.insertCell();
         celulaMensagem.innerHTML = commit.mensagem;
+        dias++;
 
     });
 
     // Substitui o conteúdo de "dados" pela tabela
+    diascomCommit(dias);
     dados.innerHTML = "";
     dados.appendChild(tabela);
+
 }
 
+function calcularDiasComCommit(dataInicial, dataFinal) {
 
+    const day1 = new Date(dataFinal);
+    const day2 = new Date(dataInicial);
+
+    const difference = day1.getTime() - day2.getTime();
+    const days = difference / (1000 * 3600 * 24);
+  // quantidade de dias com commits (caso haja algum commit)
+
+    
+
+
+    document.getElementById("tempo").textContent = `Dias disponíveis para a realização da atividade: ${days}`;
+
+
+    console.log(`Dias disponíveis: ${days}`);
+}
+
+function diascomCommit(qtd) {
+
+    // Exibir o número de linhas
+    document.getElementById("dias").textContent = `Dias com Commits: ${qtd}`;
+
+  }
